@@ -5,28 +5,45 @@ output: html_notebook
 
 # Variables
 
+In R, we have two types of values: numeric values and characters.
 ```{r}
 1
-"a"
+"text"
+```
+
+We can save these values in variables, so we can easily access them later.
+```{r}
 a <- 1
+a
+a + a
+```
+Exercises:
+```{r}
+
 ```
 
 # Vectors
 
 ```{r}
-1:10
+b <- 1:10
+c( b, b)
+b + b
 ```
-
-# Matrices
-
-# Lists
-
 
 # Functions
 
 
 ```{r}
+head()
+mean()
+max()
+length()
 ```
+
+
+# Matrices
+
+# Lists
 
 
 # Packages
