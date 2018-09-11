@@ -5,7 +5,7 @@ output: html_notebook
 
 # Variables
 
-In R, we have two types of values: numeric values and characters.
+In R, we have two main types of values: numeric values and characters.
 ```{r}
 1
 "text"
@@ -15,36 +15,111 @@ We can save these values in variables, so we can easily access them later.
 ```{r}
 a <- 1
 a
+```
+
+And re-use them :
+```{r}
 a + a
 ```
+
+
 Exercises:
+1) Assign a number of your choice to "b"
+```{r}
+
+```
+
+2) Multiply a by 2
+```{r}
+
+```
+
+3) Add 10 to a
+```{r}
+
+```
+
+4) Assign your name to an object called name
 ```{r}
 
 ```
 
 # Vectors
 
+Vectors contain several values:
 ```{r}
 b <- 1:10
+```
+
+You can concatenate these values with the "c" function:
+```{r}
 c( b, b)
+```
+
+You can also apply mathematical formulas to them:
+
+```{r}
 b + b
+```
+
+Exercices on vectors:
+1) Concatenate a and b
+```{r}
+
+```
+
+2) Concatenate your name and a
+```{r}
+
+```
+
+3) Add b to a
+```{r}
+
 ```
 
 # Functions
 
+Many functions exist in R, and greatly simplify your life:
+```{r}
+(1+2+3+4+5+6+7+8+9+10)/10
+mean(b)
+```
+
+The head function shows the 6 first elements of any object.
+The mean function computes the mean of an object.
+The length function returns the length of an object.
 
 ```{r}
-head()
-mean()
-max()
-length()
+head(b)
+mean(b)
+length(b)
+```
+
+# Data frames
+
+Data frames can be compared to tables: they are two dimensional and can contain numbers, characters...
+```{r}
+load("../inst/extdata/cyto_df.RData")
+cyto
+```
+
+# Indexing
+
+A specific column of a data frame can be selected:
+```{r}
+fcs_a <- cyto[,1]
+fcs_a
 ```
 
 
-# Matrices
+Or we can select a specific row:
+```{r}
+cell2 <- cyto[2,]
+cell2
+```
 
 # Lists
-
 
 # Packages
 
