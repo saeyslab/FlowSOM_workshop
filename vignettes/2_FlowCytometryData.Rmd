@@ -1,0 +1,40 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(flowCore)
+library(flowDensity)
+library(FlowSOM)
+library(FlowSOMworkshop)
+
+```
+
+```{r}
+wsp_file <- "../inst/extdata/manual.wsp"
+fcs_file <- "../inst/extdata/21-10-15_Tube_023.fcs"
+```
+
+```{r}
+flowjo_res <- parse_flowjo(fcs_file, wsp_file)
+```
+
+```{r}
+ff <- flowjo_res$flowFrame
+ff
+```
+
+```{r}
+get_channels(ff, c("FSC-A", "CD3#PE", "APC"))
+get_markers(ff, c("FSC-A", "CD3#PE", "APC"))
+```
+
+```{r}
+flowDensity::plotDens(ff, get_channels(ff, c("CD3", "CD19")))
+```
+```{r}
+head(flowjo_res$gates)
+
+colSums(flowjo_res$gates)
+```

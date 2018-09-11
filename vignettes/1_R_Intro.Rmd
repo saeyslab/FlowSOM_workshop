@@ -1,0 +1,37 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Variables
+
+```{r}
+1
+"a"
+a <- 1
+```
+
+# Vectors
+
+```{r}
+1:10
+```
+
+# Matrices
+
+# Lists
+
+
+# Functions
+
+
+```{r}
+```
+
+
+# Packages
+
+```{r}
+install.packages()
+library()
+```
