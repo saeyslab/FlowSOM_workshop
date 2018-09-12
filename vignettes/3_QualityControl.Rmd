@@ -3,6 +3,55 @@ title: "R Notebook"
 output: html_notebook
 ---
 
+# Setup
+
+We load some previously installed libraries, which offer specific
+functionality for flow cytometry data analysis. You can have a look at
+http://bioconductor.org/packages/release/BiocViews.html#___FlowCytometry
+to see more packages which might be of interest.
+
 ```{r}
-plot(cars)
+library(flowCore)
+library(flowDensity)
+library(flowAI)
+library(FlowSOMworkshop)
 ```
+
+We point to where the FlowJo workspace and the fcs file are saved on our 
+computer, and we parse the fcs file:
+
+```{r}
+wsp_file <- "../inst/extdata/manualGating.wsp"
+fcs_file <- "../inst/extdata/21-10-15_Tube_023.fcs"
+tube_23 <- parse_flowjo(fcs_file, wsp_file)
+```
+
+We put the flowFrame containing the expression values from the tube 23
+in a variable called "ff_23".
+
+```{r}
+ff_23 <- tube_23$flowFrame
+```
+
+Exercises:
+1.1) Generate a "tube_25" object, containing the flowFrame that corresponds
+to the cells of the tube 25:
+```{r}
+
+```
+
+1.2) Generate a "tube_26" object, containing the flowFrame that corresponds
+to the cells of the tube 26:
+```{r}
+
+```
+
+
+# Quality control
+
+We will use the FlowAI function "flow_auto_qc" to assess the quality of the
+flowframes we loaded:
+```{r}
+resQC <- flow_auto_qc(ff_23)#, folder_results = )
+```
+
