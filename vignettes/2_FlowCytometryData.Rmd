@@ -11,10 +11,10 @@ http://bioconductor.org/packages/release/BiocViews.html#___FlowCytometry
 to see more packages which might be of interest.
 
 ```{r}
-suppressPackageStartupMessages(library(flowCore))
-suppressPackageStartupMessages(library(flowDensity))
-suppressPackageStartupMessages(library(FlowSOM))
-suppressPackageStartupMessages(library(FlowSOMworkshop))
+library(flowCore)
+library(flowDensity)
+library(FlowSOM)
+library(FlowSOMworkshop)
 ```
 
 We point to where the FlowJo workspace and the fcs file are saved on our 
@@ -67,7 +67,7 @@ machine.
 colnames(ff)
 ```
 
-We can make use of some functions from the FlowSOM package to easily acces the
+We can make use of some functions from the FlowSOM package to easily access the
 marker names
 
 ```{r}
@@ -134,7 +134,7 @@ Exercises on the flowFrame object:
 
 # Inspect the manual gating 
 
-Gates is a matrix in which each row represents a cell and each column represents
+gates is a matrix in which each row represents a cell and each column represents
 a FlowJo gate. It contains TRUE or FALSE indicating whether the cell belongs to
 the gate (taking the full gating hierarchy into account).
 
