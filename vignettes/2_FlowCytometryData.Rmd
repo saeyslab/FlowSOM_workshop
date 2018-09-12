@@ -3,35 +3,102 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-```{r}
-library(flowCore)
-library(flowDensity)
-library(FlowSOM)
-library(FlowSOMworkshop)
+# Setup
 
+We load some previously installed libraries, which offer specific
+functionality for flow cytometry data analysis. You can have a look at
+http://bioconductor.org/packages/release/BiocViews.html#___FlowCytometry
+to see more packages which might be of interest.
+
+```{r}
+suppressPackageStartupMessages(library(flowCore))
+suppressPackageStartupMessages(library(flowDensity))
+suppressPackageStartupMessages(library(FlowSOM))
+suppressPackageStartupMessages(library(FlowSOMworkshop))
 ```
 
+We point to where the FlowJo workspace and the fcs file are saved on our 
+computer. Try to autocomplete with "Tab" to make sure you can access the files 
+and the path is correct.
+
 ```{r}
-wsp_file <- "../inst/extdata/manual.wsp"
+wsp_file <- "../inst/extdata/manualGating.wsp"
 fcs_file <- "../inst/extdata/21-10-15_Tube_023.fcs"
 ```
+
+# Reading a FlowJo workspace
+
+We parse how this file is processed in FlowJo. This returns a list with two
+elements: "flowFrame" contains all information from the fcs file itself,
+while "gates" includes all information regarding the gating of the file.
 
 ```{r}
 flowjo_res <- parse_flowjo(fcs_file, wsp_file)
 ```
 
+We put the flowFrame and the gating information in variables with a short name,
+so we have to type less.
+
 ```{r}
 ff <- flowjo_res$flowFrame
-ff
+gates <- flowjo_res$gates
+```
+
+# Inspect the flowFrame
+
+The measurements are saved in a matrix, in which each row represents a cell
+and every column represents a marker. 
+
+```{r}
+nrow(ff)
+```
+
+Notice that these column names correspond to the detector names in your
+machine.
+
+```{r}
+colnames(ff)
+```
+
+To access the specific measurements, we look at the exprs element of the 
+flowframe object. Note that these values have been compensated and transformed!
+
+```{r}
+head(ff@exprs)
+```
+
+Additionally, all metadata describing the fcs file is also stored in the 
+flowframe, in the description element.
+
+```{r}
+head(ff@description, n = 20)
+```
+
+This is a list, so we can also access specific values of interest.
+
+```{r}
+ff@description$`$DATE`
+ff@description$`$CYT`
+```
+
+
+
+```{r}
+head(gates)
 ```
 
 ```{r}
-get_channels(ff, c("FSC-A", "CD3#PE", "APC"))
-get_markers(ff, c("FSC-A", "CD3#PE", "APC"))
+get_channels(ff, c("FSC-A", "CD3", "Comp-APC-Cy7-A"))
+get_markers(ff, c("FSC-A", "CD3", "Comp-APC-Cy7-A"))
 ```
 
 ```{r}
-flowDensity::plotDens(ff, get_channels(ff, c("CD3", "CD19")))
+selection_live <- flowjo_res$gates[, "Live"]
+ff_live <- ff[selection_live, ]
+channels_to_plot <- get_channels(ff, c("CD3", "CD19"))
+
+flowDensity::plotDens(ff_live, 
+                      channels_to_plot)
 ```
 ```{r}
 head(flowjo_res$gates)
