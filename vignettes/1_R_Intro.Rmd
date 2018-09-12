@@ -206,4 +206,7 @@ tsne <- Rtsne(cyto, perplexity = 2)
 tsne$Y
 ```
 
-
+You can always ask help to R, if you wish to know how a function works:
+```{r}
+?Rtsne
+```
