@@ -39,6 +39,7 @@ parse_flowjo <- function(files,
                                                           gate)
     }
     ff <- flowWorkspace::getData(gates[[file_id]], "root")
+    ff@exprs[, "Time"] <- ff@exprs[, "Time"] * 100
     result[[file]] <- list("flowFrame" = ff,
                            "gates" = gatingMatrix)
 
@@ -46,7 +47,12 @@ parse_flowjo <- function(files,
       flowWorkspace::plot(gates[[file_id]])
     }
   }
-  if (length(files == 1)) result <- result[[1]]
+  if (length(files) == 1){
+    result <- result[[1]]
+  } else {
+    result <- list(flowSet = flowCore::flowSet(lapply(result, function(x) x$flowFrame)),
+                   gates = lapply(result, function(x) x$gates))
+  }
   return(result)
 }
 
