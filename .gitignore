@@ -17,6 +17,9 @@
 # RStudio files
 .Rproj.user/
 
+# QC folder
+QC/*
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
