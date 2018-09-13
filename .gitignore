@@ -20,6 +20,9 @@
 # QC folder
 QC/*
 
+# Mac thing
+.DS_Store
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
