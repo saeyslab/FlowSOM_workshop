@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "An introduction to R"
 output: html_notebook
 ---
 
@@ -27,6 +27,11 @@ a + a
 
 Exercises:
 1) Assign a number of your choice to "b"
+```{r}
+
+```
+
+2) Show what's in b
 ```{r}
 
 ```
@@ -75,7 +80,7 @@ Exercices on vectors:
 
 ```
 
-3) Add b to a
+3) Add a to b
 ```{r}
 
 ```
@@ -94,7 +99,8 @@ The length function returns the length of an object.
 
 ```{r}
 head(b)
-mean(b)
+head(b, n=3)
+median(b)
 length(b)
 ```
 
@@ -106,14 +112,25 @@ load("../inst/extdata/cyto.RData")
 cyto
 ```
 
+We can check the number of rows and columns in the cyto object:
+```{r}
+nrow(cyto)
+ncol(cyto)
+```
+
 # Indexing
 
-A specific column of a matrix can be selected:
+A specific column of a matrix can be selected by its number:
 ```{r}
 fcs_a <- cyto[,1]
 fcs_a
 ```
 
+Or the column can also be selected by typing its column name directly:
+```{r}
+cd45 <- cyto[,"CD45"]
+cd45
+```
 
 Or we can select a specific row:
 ```{r}
@@ -140,7 +157,7 @@ Exercises on matrices:
 
 # Lists
 
-Lists in R can be compared to vectors, which can contain various types:
+Lists in R can be compared to vectors, which can contain various objects:
 ```{r}
 random_numbers <- c(1,2,3,7)
 random_letters <- c("A","B","C","Z")
@@ -167,9 +184,14 @@ Exercises on lists:
 # Packages
 
 Packages contain sets of useful functions, which can be installed, loaded, and then used in R.
+A package needs to be installed only once on your computer:
 
 ```{r}
 install.packages(Rtsne)
+```
+
+But needs to be loaded every time you wish to use it:
+```{r}
 library(Rtsne)
 ```
 
@@ -182,4 +204,9 @@ tsne <- Rtsne(cyto)
 ```{r}
 tsne <- Rtsne(cyto, perplexity = 2)
 tsne$Y
+```
+
+You can always ask help to R, if you wish to know how a function works:
+```{r}
+?Rtsne
 ```
