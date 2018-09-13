@@ -40,7 +40,7 @@ elements: "flowFrame" contains all information from the fcs file itself,
 while "gates" includes all information regarding the gating of the file.
 
 ```{r}
-flowjo_res <- parse_flowjo(fcs_file, wsp_file)
+flowjo_res <- parse_flowjo(fcs_file, wsp_file, plot = TRUE)
 ```
 
 We put the flowFrame and the gating information in variables with a short name,

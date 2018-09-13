@@ -4,5 +4,38 @@ output: html_notebook
 ---
 
 ```{r}
-plot(cars)
+library(FlowSOM)
+library(FlowSOMworkshop)
+```
+
+```{r}
+files <- list.files("../inst/extdata", pattern = ".fcs")
+files
+```
+
+```{r}
+data <- parse_flowjo(files,
+                     "../inst/extdata/manualGating.wsp")
+```
+
+```{r}
+cell_types <- c("Macrophages", "B cells", "NK cells", "NK T cells",
+                "DCs", "Neutrophils", "Basophils", "T cells")
+```
+
+```{r}
+manual_labels <- manual_vector(data$gates$`21-10-15_Tube_011.fcs`,
+                               cell_types)
+```
+
+```{r}
+fsom <- FlowSOM(data$flowSet[["21-10-15_Tube_011.fcs"]],
+                colsToUse = c(8:15, 17:19),
+                scale = FALSE,
+                nClus = 10,
+                seed = 1)
+```
+
+```{r}
+PlotPies(fsom$FlowSOM, manual_labels, backgroundValues = fsom$metaclustering)
 ```
