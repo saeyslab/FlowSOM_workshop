@@ -31,6 +31,8 @@ in a variable called "ff_23".
 
 ```{r}
 ff_23 <- tube_23$flowFrame
+ff_23@exprs[,"Time"] <- ff_23@exprs[,"Time"] *100
+
 ```
 
 Exercises:
@@ -52,6 +54,23 @@ to the cells of the tube 26:
 We will use the FlowAI function "flow_auto_qc" to assess the quality of the
 flowframes we loaded:
 ```{r}
-resQC <- flow_auto_qc(ff_23)#, folder_results = )
+resQC <- flow_auto_qc(ff_23, folder_results = "../QC/")
 ```
+
+```{r}
+#wsp_file <- "../inst/extdata/manualGating.wsp"
+wsp_file <- "~/Documents/VIB/Sofie/WorkshopParis/fcsFiles/dataset2/24-Nov-2016.wsp"
+fcs_files <- list.files("~/Documents/VIB/Sofie/WorkshopParis/fcsFiles/dataset2/", pattern = ".fcs")
+```
+
+
+
+```{r}
+tubes <- parse_flowjo(fcs_files, wsp_file)
+```
+
+```{r}
+resQC <- flow_auto_qc(tubes$flowSet, folder_results = "../QC/")
+```
+
 
