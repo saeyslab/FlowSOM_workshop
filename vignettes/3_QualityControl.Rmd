@@ -1,12 +1,16 @@
 ---
-title: "R Notebook"
+title: "Quality control of cytometry data"
 output: html_notebook
 ---
+
+In this script, we will go through the necessary steps to apply, in order to 
+make sure that the data is cleaned, and that further analyses will reflect
+biological processes rather than technical artefacts.
 
 # Setup
 
 We load some previously installed libraries, which offer specific
-functionality for flow cytometry data analysis. You can have a look at
+functionalities for flow cytometry data analysis. You can have a look at
 http://bioconductor.org/packages/release/BiocViews.html#___FlowCytometry
 to see more packages which might be of interest.
 
@@ -22,55 +26,93 @@ computer, and we parse the fcs file:
 
 ```{r}
 wsp_file <- "../inst/extdata/manualGating.wsp"
-fcs_file <- "../inst/extdata/21-10-15_Tube_023.fcs"
-tube_23 <- parse_flowjo(fcs_file, wsp_file)
+fcs_file <- "../inst/extdata/21-10-15_Tube_013.fcs"
+tube_13 <- parse_flowjo(fcs_file, wsp_file)
 ```
 
-We put the flowFrame containing the expression values from the tube 23
-in a variable called "ff_23".
+We put the flowFrame containing the expression values from the tube 13
+in a variable called "ff_13".
 
 ```{r}
-ff_23 <- tube_23$flowFrame
-ff_23@exprs[,"Time"] <- ff_23@exprs[,"Time"] *100
-
+ff_13 <- tube_13$flowFrame
 ```
 
 Exercises:
-1.1) Generate a "tube_25" object, containing the flowFrame that corresponds
-to the cells of the tube 25:
+1.1) Generate a "tube_11" object, containing the flowFrame that corresponds
+to the cells of the tube 11:
 ```{r}
 
 ```
 
-1.2) Generate a "tube_26" object, containing the flowFrame that corresponds
-to the cells of the tube 26:
+1.2) Generate a "tube_28" object, containing the flowFrame that corresponds
+to the cells of the tube 28:
 ```{r}
 
 ```
 
 
-# Quality control
+# Control of the time effects:
 
 We will use the FlowAI function "flow_auto_qc" to assess the quality of the
-flowframes we loaded:
+flowframe we loaded. We also provide to the function the path of the 
+folder in which we want the results to be plotted.
 ```{r}
-resQC <- flow_auto_qc(ff_23, folder_results = "../QC/")
+resQC <- flow_auto_qc(ff_13, folder_results = "../QC/")
 ```
 
+Now, we will assess the quality of all 6 fcs files that we have available.
+We begin by listing all these fcs files:
+
 ```{r}
-#wsp_file <- "../inst/extdata/manualGating.wsp"
-wsp_file <- "~/Documents/VIB/Sofie/WorkshopParis/fcsFiles/dataset2/24-Nov-2016.wsp"
-fcs_files <- list.files("~/Documents/VIB/Sofie/WorkshopParis/fcsFiles/dataset2/", pattern = ".fcs")
+fcs_files <- list.files("../inst/extdata/", pattern = ".fcs")
+fcs_files
 ```
 
-
+We then parse all these fcs files with the information contained in the 
+workspace:
 
 ```{r}
 tubes <- parse_flowjo(fcs_files, wsp_file)
 ```
 
+The tubes object now contains:
+- a flowSet, which contains one flowframe per fcs file we loaded
+- the information corresponding to the manual gating
+
+We will only need the flowframes for quality control with flowAI:
+
 ```{r}
-resQC <- flow_auto_qc(tubes$flowSet, folder_results = "../QC/")
+flowset <- tubes$flowSet
+flowset
 ```
 
+The "flow_auto_qc" accepts  flowsets as well as flowframes as input,
+so we can use it directly on the flowset that we generated:
+
+```{r}
+resQC <- flow_auto_qc(flowset, folder_results = "../QC/")
+```
+
+# Control of differences between files:
+
+It can be interesting to look at the main differences between files, to compare:
+
+- files corresponding to different experimental groups
+- files produced on different days of experimentation
+- ...
+
+To do so, we can use the plot_aggregate function:
+
+We first select the live cells only:
+
+```{r}
+data_live <- gating_subset(tubes, "Live")
+```
+
+And then plot these cells:
+
+```{r}
+plot_aggregate(flowset = data_live$flowSet, 
+               labels = c("1","1","1","2","2","2"))
+```
 
