@@ -13,6 +13,9 @@
 #'
 #' @export
 manual_vector <- function(manual_matrix, cell_types){
+
+  if(is.list(manual_matrix)){ manual_matrix <- do.call(rbind, manual_matrix) }
+
   manual <- rep("Unknown",nrow(manual_matrix))
   for(cellType in cell_types){
     manual[manual_matrix[,cellType]] <- cellType

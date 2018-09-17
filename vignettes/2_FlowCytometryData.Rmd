@@ -13,6 +13,7 @@ to see more packages which might be of interest.
 ```{r}
 library(flowCore)
 library(flowDensity)
+library(flowWorkspace)
 library(FlowSOM)
 library(FlowSOMworkshop)
 ```
@@ -23,14 +24,14 @@ and the path is correct.
 
 ```{r}
 wsp_file <- "../inst/extdata/manualGating.wsp"
-fcs_file <- "../inst/extdata/21-10-15_Tube_023.fcs"
+fcs_file <- "../inst/extdata/21-10-15_Tube_011.fcs"
 ```
 
 Exercise on finding files:
 
 1) Change the value of fcs_file to Tube 28, using Tab to find the right filename
 ```{r}
-
+fcs_file <- "../inst/extdata/21-10-15_Tube_028.fcs"
 ```
 
 # Reading a FlowJo workspace
@@ -104,32 +105,32 @@ Exercises on the flowFrame object:
 
 2) Show the number of columns in the flowFrame
 ```{r}
-
+ncol(ff)
 ```
 
 3) Show the values measured for the 150th event
 ```{r}
-
+ff@exprs[150, ]
 ```
 
 4) Show which channel was used to measure CD19
 ```{r}
-
+get_channels(ff, "CD19")
 ```
 
 5) Show the CD19 values measured for the first 6 events
 ```{r}
-
+ff@exprs[1:6, get_channels(ff, "CD19")]
 ```
 
 6) Show the median CD19 value
 ```{r}
-
+median(ff@exprs[, get_channels(ff, "CD19")])
 ```
 
 7) Show at what time the FCS file began recording
 ```{r}
-
+ff@description$`$BTIM`
 ```
 
 # Inspect the manual gating 
@@ -154,64 +155,46 @@ If one specific gate is of interest, we can select this one column from the
 matrix. Spelling should be exactly the same as in FlowJo!
 
 ```{r}
-selection_live <- flowjo_res$gates[, "Live"]
+data_live <- gating_subset(flowjo_res, "Live")
 ```
 
 Exercise:
 8) Show how many cells are selected in selection_live
 ```{r}
-
+nrow(data_live$flowFrame)
 ```
 
-We can use this vector of TRUE/FALSE values to select the cells of interest.
-When a boolean vector of the same length as the data is given for indexation,
-only those are selected where the value is TRUE.
-```{r}
-ff_live <- ff[selection_live, ]
-```
-
-Exercise:
-9) Show how many cells are present in the new flowFrame
-```{r}
-
-```
 
 We can then use this new flowFrame to plot the data of interest
 ```{r}
 channels_to_plot <- get_channels(ff, c("CD64", "AmCyan-A"))
 
-plotDens(ff_live, 
+plotDens(data_live$flowFrame, 
          channels_to_plot)
 ```
 
 Exercise:
 10) Plot the B cells on CD3 vs CD19
 ```{r}
-
-
-
+data_B <- gating_subset(flowjo_res, "B cells")
+channels_to_plot <- get_channels(ff, c("CD3", "CD19"))
+plotDens(data_B$flowFrame, 
+         channels_to_plot)
 ```
 
-If we want to get the gating information for a subset of cells, we need to
-apply the same indexation on the gating matrix.
-
-```{r}
-selection_macrophages_from_live <- gates[selection_live, "Macrophages"]
-head(selection_macrophages_from_live, n = 10)
-```
 
 If we want to assign a color to each cell based on these FALSE/TRUE labels,
 we can change the internal 0/1 to 1/2 by adding one,
 and using the result to pick the colors
 ```{r}
-color_macrophages <- c("black", "red")[1 + selection_macrophages_from_live]
+color_macrophages <- c("black", "red")[1 + data_live$gates[,"Macrophages"]]
 head(color_macrophages, n = 10)
 ```
 
 ```{r}
 channels_to_plot <- get_channels(ff, c("CD64", "AmCyan-A"))
 
-plotDens(ff_live, 
+plotDens(data_live$flowFrame, 
          channels_to_plot,
          col = color_macrophages)
 ```
@@ -219,7 +202,11 @@ plotDens(ff_live,
 Exercise:
 10) Show all live cells on CD3 vs CD19, with the B cells colored blue
 ```{r}
+color_B <- c("black", "blue")[1 + data_live$gates[,"B cells"]]
 
+channels_to_plot <- get_channels(ff, c("CD3", "CD19"))
 
-
+plotDens(data_live$flowFrame, 
+         channels_to_plot,
+         col = color_B)
 ```

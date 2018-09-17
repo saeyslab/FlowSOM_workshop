@@ -29,6 +29,8 @@ parse_flowjo <- function(files,
   for(file in files){
     print(paste0("Processing ", file))
     file_id <- grep(gsub(".*/", "", file), files_in_wsp)
+    if(length(file_id) == 0) {stop("File not found. Files available: ",
+                                   gsub("_[0-9]*$", "\n", files_in_wsp))}
     gate_names <- flowWorkspace::getNodes(gates[[file_id]], path = "auto")
     gatingMatrix <- matrix(FALSE,
                            nrow = counts[file_id],

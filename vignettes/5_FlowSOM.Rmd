@@ -3,39 +3,191 @@ title: "R Notebook"
 output: html_notebook
 ---
 
+# Setup
+
+Load some previously installed libraries
+
 ```{r}
+library(flowCore)
 library(FlowSOM)
 library(FlowSOMworkshop)
 ```
 
+list.files is a function which list all files in a given directory. A pattern 
+can be specified so only the files containing this pattern are selected. 
+If you are interested in defining very detailed patterns, have a look at 
+"R regular expressions".
+
 ```{r}
-files <- list.files("../inst/extdata", pattern = ".fcs")
+files <- list.files("../inst/extdata", 
+                    pattern = ".fcs")
 files
 ```
+
+We parse all these files, which were manually gated up front. The resulting
+data object is a list which contains a flowSet ( = a collection of flowframes)
+and a list with the manual gating matrices. Note that all this information is
+loaded in the RAM memory of your computer, if you are working with big datasets
+this would need to be split up!
 
 ```{r}
 data <- parse_flowjo(files,
                      "../inst/extdata/manualGating.wsp")
 ```
 
+We only want to work on the live single cells.
+```{r}
+data <- gating_subset(data, "Live")
+```
+
+While we read information of all gates in the gating hierarchy, some of them
+are only used as intermediate steps to finally recover the correct subsets of
+cells. We identify all gates which are really of interest to label the cells,
+and can then use this information to assign 1 final label to each cell.
+
 ```{r}
 cell_types <- c("Macrophages", "B cells", "NK cells", "NK T cells",
                 "DCs", "Neutrophils", "Basophils", "T cells")
-```
 
-```{r}
-manual_labels <- manual_vector(data$gates$`21-10-15_Tube_011.fcs`,
+manual_labels <- manual_vector(data$gates,
                                cell_types)
 ```
 
-```{r}
-fsom <- FlowSOM(data$flowSet[["21-10-15_Tube_011.fcs"]],
-                colsToUse = c(8:15, 17:19),
-                scale = FALSE,
-                nClus = 10,
-                seed = 1)
-```
+# FlowSOM
+
+Now we can run the FlowSOM algorithm. 
+We need to pass the data, which channels we want to use, whether we want to 
+scale the data (if TRUE, each column is tranformed to a mean of 0 and a sd of 
+1), the x- and y-dimensions of our grid (resulting in x * y clusters), the
+number of metaclusters (which could be interpreted as the actual populations)
+and a seed, which allows to reproduce the exact same random decisions.
+One line is added to remove the channel names from the labeling in the plots.
 
 ```{r}
-PlotPies(fsom$FlowSOM, manual_labels, backgroundValues = fsom$metaclustering)
+fsom <- FlowSOM(data$flowSet,
+                colsToUse = c(8:15, 17:19),
+                scale = FALSE,
+                xdim = 10, ydim = 10,
+                nClus = 10,
+                seed = 1)
+fsom$FlowSOM$prettyColnames <- gsub(" <.*", "", fsom$FlowSOM$prettyColnames)
 ```
+
+
+Exercises:
+
+1) Make a fsom49 object with 49 clusters instead of 100 and 8 metaclusters
+```{r}
+fsom49 <- FlowSOM(data$flowSet,
+                  colsToUse = c(8:15, 17:19),
+                  scale = FALSE,
+                  xdim = 7, ydim = 7,
+                  nClus = 8,
+                  seed = 1)
+```
+
+2) Make a fsom_t_b object for which you only use the CD3 and CD19 markers to 
+apply the clustering.
+```{r}
+fsom_t_b <- FlowSOM(data$flowSet,
+                    colsToUse = c(8:15, 17:19),
+                    scale = FALSE,
+                    xdim = 10, ydim = 10,
+                    nClus = 10,
+                    seed = 1)
+```
+
+# Plotting the results
+
+In the original FlowSOM object, the size of the node depends on the number of
+cells assigned to it. We make an adapted version in which the node size is reset
+to a value of 12 everywhere, for an easier view of the data.
+```{r}
+fsom_equal_sizes <- UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 12)
+```
+
+```{r fig.width = 15}
+PlotStars(fsom_equal_sizes)
+```
+
+Exercises:
+
+1) Also plot the trees for your fsom49 and fsom_b_t objects
+```{r fig.width = 15}
+
+```
+
+2)  With the markers argument, you can specify which markers should be shown.  
+Plot the tree for the original fsom object showing only four markers of your 
+choice.
+
+```{r fig.width = 15}
+
+```
+
+3) You can choose the colors of the markers by specifying the colorPalette argument.
+This needs a colorPalette as input, which you can generate by using something like
+grDevices::colorRampPalette(c("color1", "color2", "color3", "color4"))  
+Regenerate your previous plot with some colors of your choice.  
+You might want to have a look at colorbrewer2.org to pick nice colors.
+```{r fig.width = 15}
+
+```
+
+4) By specifying view = "grid", you can show the original grid instead. Try
+this out.
+
+```{r fig.width = 15}
+
+```
+
+We can also include the metaclustering information in the plot. Backgroundvalues
+takes one value for every FlowSOM cluster as input and color codes them.
+
+```{r fig.width = 15}
+PlotStars(fsom_equal_sizes,
+          backgroundValues = fsom$metaclustering)
+```
+
+We can also compare this structure with the manual gating results.
+We plot pie charts indicating the percentage of cells in each cluster falling
+into a specific gate.
+
+```{r fig.width = 15}
+PlotPies(fsom$FlowSOM, 
+         manual_labels, 
+         backgroundValues = fsom$metaclustering)
+```
+
+Exercises
+
+5) Show the metaclustering on the grid
+```{r}
+
+```
+
+6) Show the manual gating result on the fsom49 tree, 
+with and without the metaclustering coloring
+```{r}
+
+```
+
+To refer to the clusters, it is easier to assign each of them a number
+
+```{r}
+PlotNumbers(fsom$FlowSOM)
+```
+plot numbers
+
+2d scatter plot
+
+heatmap metacluster mfis
+
+
+
+
+# Comparing samples
+
+```{r}
+```
+
