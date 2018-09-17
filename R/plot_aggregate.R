@@ -41,8 +41,9 @@ plot_aggregate <- function(flowset,
     colors <- "#00000055"
   } else {
     labels <- factor(labels)
-    colors <- colorRampPalette(RColorBrewer::brewer.pal("Paired", 9))(length(levels(labels)),
-                      alpha = 0.4)[labels][file_values]
+    color_palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Paired"))
+    colors <- paste0(color_palette(length(levels(labels))), "55")
+    colors <- colors[labels][file_values]
   }
   # Make a plot for every channel
   for(channel in sort(channels)){
@@ -50,7 +51,7 @@ plot_aggregate <- function(flowset,
     # Empty plot, with ranges set correctly
     plot(0, type="n", xaxt="n",
          xlab = "",
-         ylab = get_markers(flowset[[1]], channel),
+         ylab = FlowSOM::get_markers(flowset[[1]], channel),
          cex.lab = 5,
          ylim = c(min(data[, channel]),
                   max(data[, channel])),
