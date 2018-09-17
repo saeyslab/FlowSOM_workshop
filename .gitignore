@@ -12,7 +12,7 @@
 /*.tar.gz
 
 # png figures
-/*.png
+*.png
 
 # Output files from R CMD check
 /*.Rcheck/

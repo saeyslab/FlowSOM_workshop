@@ -86,8 +86,32 @@ flowset <- tubes$flowSet
 flowset
 ```
 
-The "flow_auto_qc" accepts  flowsets as well as flowframes as input,
-so we can use it directly on the flowset that we generated:
+Each flowframe in the flowSet can be accessed by filename:
+
+```{r}
+flowset$`21-10-15_Tube_028.fcs`
+```
+
+Or by index:
+
+```{r}
+flowset[[1]]
+```
+
+Exercises:
+
+1) How many cells are there in the second flowframe of the flowset object?
+```{r}
+
+```
+
+2) In which channel were CD3 and CD19 measured?
+```{r}
+
+```
+
+To use flowAI, the "flow_auto_qc" accepts  flowsets as well as flowframes 
+as input, so we can use it directly on the flowset that we generated:
 
 ```{r}
 resQC <- flow_auto_qc(flowset, folder_results = "../QC/")
