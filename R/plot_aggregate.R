@@ -46,8 +46,8 @@ plot_aggregate <- function(flowset,
     colors <- colors[labels][file_values]
   }
   # Make a plot for every channel
-  for(channel in sort(channels)){
-    print(channel)
+  for(channel in channels){
+    print(FlowSOM::get_markers(flowset[[1]], channel))
     # Empty plot, with ranges set correctly
     plot(0, type="n", xaxt="n",
          xlab = "",
