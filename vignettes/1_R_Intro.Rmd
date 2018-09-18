@@ -28,27 +28,27 @@ a + a
 Exercises:
 1) Assign a number of your choice to "b"
 ```{r}
-
+b <- 7
 ```
 
 2) Show what's in b
 ```{r}
-
+b
 ```
 
-2) Multiply a by 2
+3) Multiply a by 2
 ```{r}
-
+a * 2
 ```
 
-3) Add 10 to a
+4) Add 10 to a
 ```{r}
-
+a + 10
 ```
 
-4) Assign your name to an object called name
+5) Assign your name to an object called name
 ```{r}
-
+name <- "Helena"
 ```
 
 # Vectors
@@ -70,19 +70,19 @@ b + b
 ```
 
 Exercices on vectors:
-1) Concatenate a and b
+6) Concatenate a and b
 ```{r}
-
+c(a,b)
 ```
 
-2) Concatenate your name and a
+7) Concatenate your name and a
 ```{r}
-
+c(name, a)
 ```
 
-3) Add a to b
+8) Add a to b
 ```{r}
-
+a + b
 ```
 
 # Functions
@@ -145,14 +145,14 @@ cyto[,c(1,2)]
 
 Exercises on matrices:
 
-1) Show the 2 first rows of the cyto matrix
+9) Show the 2 first rows of the cyto matrix
 ```{r}
-
+cyto[c(1,2),]
 ```
 
-2) Show the FSC-A value of the first cell
+10) Show the FSC-A value of the first cell
 ```{r}
-
+cyto[1,1]
 ```
 
 # Lists
@@ -175,9 +175,10 @@ my_list$my_numbers
 ```
 
 Exercises on lists:
-1) Create a list containing your name, and job:
+11) Create a list containing your name, and job:
 ```{r}
-
+my_list <- list(name = name, job = "bioinformatician")
+my_list
 ```
 
 
