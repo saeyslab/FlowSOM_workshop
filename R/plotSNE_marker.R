@@ -21,10 +21,9 @@ plotSNE_marker <- function(flowframe, tsne_result, marker){
                     as.character(FlowSOM::get_markers(flowframe,
                                                       flowCore::colnames(flowframe))))
   colnames(df) <- gsub("-","_",colnames(df))
-  p<- ggplot2::ggplot(df, ggplot2::aes(V1, V2, col = !!rlang::sym(marker))) +
+  ggplot2::ggplot(df, ggplot2::aes(V1, V2, col = !!rlang::sym(marker))) +
     ggplot2::geom_point()+
     ggplot2::theme_minimal()
-  return(p)
 }
 
 
