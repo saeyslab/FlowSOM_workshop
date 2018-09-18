@@ -1,6 +1,12 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Part 5 - FlowSOM"
+author: "Helena Todorov and Sofie Van Gassen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Part 5 - FlowSOM}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 # Setup
@@ -40,6 +46,11 @@ We only want to work on the live single cells.
 data <- gating_subset(data, "Live")
 ```
 
+We store the first flowframe in a separate variable, for easy access later on
+```{r}
+ff <- data$flowSet[[1]]
+```
+
 While we read information of all gates in the gating hierarchy, some of them
 are only used as intermediate steps to finally recover the correct subsets of
 cells. We identify all gates which are really of interest to label the cells,
@@ -64,8 +75,13 @@ and a seed, which allows to reproduce the exact same random decisions.
 One line is added to remove the channel names from the labeling in the plots.
 
 ```{r}
+channels_of_interest <-  colnames(ff)[c(8:15, 17:19)]
+print(get_markers(ff, channels_of_interest))
+```
+
+```{r}
 fsom <- FlowSOM(data$flowSet,
-                colsToUse = c(8:15, 17:19),
+                colsToUse = channels_of_interest,
                 scale = FALSE,
                 xdim = 10, ydim = 10,
                 nClus = 10,
@@ -79,7 +95,7 @@ Exercises:
 1) Make a fsom49 object with 49 clusters instead of 100 and 8 metaclusters
 ```{r}
 fsom49 <- FlowSOM(data$flowSet,
-                  colsToUse = c(8:15, 17:19),
+                  colsToUse = channels_of_interest,
                   scale = FALSE,
                   xdim = 7, ydim = 7,
                   nClus = 8,
@@ -87,17 +103,21 @@ fsom49 <- FlowSOM(data$flowSet,
 ```
 
 2) Make a fsom_t_b object for which you only use the CD3 and CD19 markers to 
-apply the clustering.
+apply the clustering, using 25 clusters and 4 metaclusters.
 ```{r}
 fsom_t_b <- FlowSOM(data$flowSet,
-                    colsToUse = c(8:15, 17:19),
+                    colsToUse = get_channels(ff, c("CD3", "CD19")),
                     scale = FALSE,
-                    xdim = 10, ydim = 10,
-                    nClus = 10,
+                    xdim = 5, ydim = 5,
+                    nClus = 4,
                     seed = 1)
 ```
 
 # Plotting the results
+
+```{r fig.width = 10, asp.ratio = 1}
+PlotStars(fsom$FlowSOM)
+```
 
 In the original FlowSOM object, the size of the node depends on the number of
 cells assigned to it. We make an adapted version in which the node size is reset
@@ -106,23 +126,24 @@ to a value of 12 everywhere, for an easier view of the data.
 fsom_equal_sizes <- UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 12)
 ```
 
-```{r fig.width = 15}
+```{r fig.width = 10, asp.ratio = 1}
 PlotStars(fsom_equal_sizes)
 ```
 
 Exercises:
 
-1) Also plot the trees for your fsom49 and fsom_b_t objects
-```{r fig.width = 15}
-
+3) Also plot the trees for your fsom49 object
+```{r fig.width = 10, asp.ratio = 1}
+PlotStars(fsom49$FlowSOM)
 ```
 
-2)  With the markers argument, you can specify which markers should be shown.  
+4)  With the markers argument, you can specify which channels should be shown.  
 Plot the tree for the original fsom object showing only four markers of your 
 choice.
 
-```{r fig.width = 15}
-
+```{r  fig.width = 10, asp.ratio = 1}
+PlotStars(fsom_equal_sizes,
+          markers = get_channels(ff, c("CD3", "CD19", "MHCII", "CD161")))
 ```
 
 3) You can choose the colors of the markers by specifying the colorPalette argument.
@@ -130,19 +151,27 @@ This needs a colorPalette as input, which you can generate by using something li
 grDevices::colorRampPalette(c("color1", "color2", "color3", "color4"))  
 Regenerate your previous plot with some colors of your choice.  
 You might want to have a look at colorbrewer2.org to pick nice colors.
-```{r fig.width = 15}
-
+```{r fig.width = 10, asp.ratio = 1}
+PlotStars(fsom_equal_sizes,
+          markers = get_channels(ff, c("CD3", "CD19", "MHCII", "CD161")),
+          colorPalette = grDevices::colorRampPalette(c("#bd0026", 
+                                                       "#74a9cf", 
+                                                       "#2b8cbe", 
+                                                       "#df65b0")))
 ```
 
 4) By specifying view = "grid", you can show the original grid instead. Try
-this out.
+this out for your fsom_t_b object.
 
 ```{r fig.width = 15}
-
+PlotStars(fsom_t_b$FlowSOM,
+          view = "grid")
 ```
 
-We can also include the metaclustering information in the plot. Backgroundvalues
-takes one value for every FlowSOM cluster as input and color codes them.
+The metaclustering level often corresponds closer to the population level you
+would expect in manual gating. We visualize them using the backgroundvalues
+argument, which takes one value for every FlowSOM cluster as input and color 
+codes them.
 
 ```{r fig.width = 15}
 PlotStars(fsom_equal_sizes,
@@ -159,35 +188,121 @@ PlotPies(fsom$FlowSOM,
          backgroundValues = fsom$metaclustering)
 ```
 
-Exercises
+Exercises:
 
 5) Show the metaclustering on the grid
-```{r}
-
+```{r fig.width = 15}
+PlotStars(fsom$FlowSOM,
+          backgroundValues = fsom$metaclustering,
+          view = "grid")
 ```
 
 6) Show the manual gating result on the fsom49 tree, 
 with and without the metaclustering coloring
-```{r}
+```{r  fig.width = 15}
+PlotPies(fsom49$FlowSOM,
+         cellTypes = manual_labels,
+         backgroundValues = fsom49$metaclustering)
 
+PlotPies(fsom49$FlowSOM,
+         cellTypes = manual_labels)
 ```
 
 To refer to the clusters, it is easier to assign each of them a number
 
-```{r}
-PlotNumbers(fsom$FlowSOM)
+```{r  fig.width = 10, fig.height = 10}
+PlotNumbers(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0))
 ```
-plot numbers
 
-2d scatter plot
+Show the metacluster numbers on a plot.
+
+```{r  fig.width = 15}
+PlotLabels(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0),
+           labels = fsom$metaclustering)
+```
+
+It might be interesting to check the backgating of a cluster to the 
+traditional scatter plots to ensure that things are making sense.
+You can use the PlotClusters2D function for this, which takes a FlowSOM object,
+two channel names and a vector of cluster numbers as input.
+
+Example with one cluster:
+```{r fig.width = 15}
+PlotClusters2D(fsom$FlowSOM,
+               get_channels(ff, "CD3"),
+               get_channels(ff, "CD19"),
+               70)
+```
+
+Example with multiple clusters, which all belong to one metacluster:
+```{r fig.width = 15}
+PlotClusters2D(fsom$FlowSOM,
+               get_channels(data$flowSet[[1]], "CD3"),
+               get_channels(data$flowSet[[1]], "CD19"),
+               which(fsom$metaclustering == 6))
+```
+
+Exercises:
+
+7) Plot the cluster which contains the NKT cells on CD3 vs CD161
+```{r fig.width = 10, asp.ratio = 1}
+
+```
+
 
 heatmap metacluster mfis
 
+```{r fig.width = 15}
+MFIs <- GetMFIs(fsom)[, channels_of_interest]
+colnames(MFIs) <- get_markers(data$flowSet[[1]], colnames(MFIs))
+pheatmap::pheatmap(MFIs)
+```
+
+```{r fig.width = 15}
+meta_MFIs <- MetaclusterMFIs(fsom)[, channels_of_interest]
+colnames(meta_MFIs) <- get_markers(data$flowSet[[1]], colnames(meta_MFIs))
+pheatmap::pheatmap(meta_MFIs)
+```
 
 
 
 # Comparing samples
 
+The table function gives an overview of the amount of times every value appears.
+If you pass it two vectors, it will count the pairs that appear.
 ```{r}
+table(c("a", "b", "b", "c", "b", "a"))
+table(c("a", "b", "b", "c", "b", "a"),
+      c("A", "B", "B", "A", "B", "B"))
 ```
 
+We can use this to get an overview of the number of cells assigned to each of the clusters.
+```{r}
+table(GetClusters(fsom$FlowSOM))
+```
+
+```{r}
+table(GetMetaclusters(fsom),
+      manual_labels)
+```
+
+```{r}
+counts <- get_counts(fsom)
+
+counts$counts
+
+counts$meta_counts
+```
+
+We can use these numbers to plot:
+```{r}
+
+```
+
+```{r}
+FlowSOMSubset()
+``` 
+
+ boxplots?
+ 
+ 
