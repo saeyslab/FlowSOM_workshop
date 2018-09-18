@@ -38,16 +38,20 @@ ff_13 <- tube_13$flowFrame
 ```
 
 Exercises:
-1.1) Generate a "tube_11" object, containing the flowFrame that corresponds
+1) Generate a "tube_11" object, containing the flowFrame that corresponds
 to the cells of the tube 11:
 ```{r}
-
+fcs_file_11 <- "../inst/extdata/21-10-15_Tube_011.fcs"
+tube_11 <- parse_flowjo(fcs_file_11, wsp_file)
 ```
 
-1.2) Generate a "tube_28" object, containing the flowFrame that corresponds
+2) Generate a "ff_28" object, containing the flowFrame that corresponds
 to the cells of the tube 28:
 ```{r}
-
+fcs_file_28 <- "../inst/extdata/21-10-15_Tube_028.fcs"
+tube_28 <- parse_flowjo(fcs_file_28, wsp_file)
+ff_28 <- tube_28$flowFrame
+ff_28
 ```
 
 
@@ -86,7 +90,7 @@ flowset <- tubes$flowSet
 flowset
 ```
 
-Each flowframe in the flowSet can be accessed by filename:
+Each flowframe in the flowSet can be accessed by its filename:
 
 ```{r}
 flowset$`21-10-15_Tube_028.fcs`
@@ -100,14 +104,14 @@ flowset[[1]]
 
 Exercises:
 
-1) How many cells are there in the second flowframe of the flowset object?
+3) How many cells are there in the second flowframe of the flowset object?
 ```{r}
-
+nrow(flowset[[2]])
 ```
 
-2) In which channel were CD3 and CD19 measured?
+4) In which channels were CD3 and CD19 measured?
 ```{r}
-
+get_channels(flowset[[1]], c("CD3", "CD19"))
 ```
 
 To use flowAI, the "flow_auto_qc" accepts  flowsets as well as flowframes 
@@ -133,7 +137,7 @@ We first select the live cells only:
 data_live <- gating_subset(tubes, "Live")
 ```
 
-And then plot these cells:
+And then plot these live cells, for each of the files we have:
 
 ```{r}
 plot_aggregate(flowset = data_live$flowSet, 

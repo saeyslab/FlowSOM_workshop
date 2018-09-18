@@ -80,10 +80,9 @@ We can also color this plot according to the expression value
 of a certain marker of interest:
 
 ```{r}
-plot_marker <- plotSNE_marker(flowframe = subsample,
+plotSNE_marker(flowframe = subsample,
                               tsne_result = tsne,
                               marker = "CD19")
-plot_marker
 ```
 
 Or we can color this plot according to the results of the manual gating. 
@@ -99,4 +98,31 @@ We can then plot the tSNE result, colored according to the manual gating:
 plotSNE_manual_gating(tsne_result = tsne, cell_ids = cell_ids)
 ```
 
+Exercises :
+1) Run tSNE on the same subsample of cells, but this time using only the "CD3" 
+and "CD19" channels
 
+```{r}
+channels_of_interest <- colnames(live_ff)[c(17:18)]
+print(get_markers(live_ff, channels_of_interest))
+```
+
+```{r}
+tsne_2 <- Rtsne(subsample@exprs[,channels_of_interest])
+```
+
+2) Color the new tSNE results based on the expression of "CD3"
+
+```{r}
+plotSNE_marker(flowframe = subsample,
+                              tsne_result = tsne_2,
+                              marker = "CD3")
+```
+
+3) Color the new tSNE results based on the expression of "CD19"
+
+```{r}
+plotSNE_marker(flowframe = subsample,
+                              tsne_result = tsne_2,
+                              marker = "CD19")
+```
