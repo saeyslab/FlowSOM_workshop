@@ -1,6 +1,12 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Part 2 - Flow Cytometry Data"
+author: "Helena Todorov and Sofie Van Gassen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Part 2 - Flow Cytometry Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 # Setup
