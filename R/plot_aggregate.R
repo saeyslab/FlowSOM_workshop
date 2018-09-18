@@ -11,13 +11,17 @@
 #' @export
 plot_aggregate <- function(flowset,
                            labels = NULL,
-                           output_image = "aggregate.png"){
+                           output_image = "aggregate.png",
+                           max_nm = 6*25000){
   data <- flowCore::fsApply(flowset, function(ff){ ff@exprs })
   cell_counts <- flowCore::fsApply(flowset, function(ff){ nrow(ff) })
   file_values <- unlist(sapply(seq_len(length(cell_counts)),
                                   function(i){
                                     rep(i, cell_counts[i])
                                   }))
+  subset <- sample(seq_len(nrow(data)), min(max_nm, nrow(data)))
+  data <- data[subset, ]
+  file_values <- file_values[subset]
   file_values_scattered <- file_values + stats::rnorm(length(file_values),
                                                       0, 0.1)
 
@@ -31,7 +35,7 @@ plot_aggregate <- function(flowset,
   png(output_image,
       width = 6000, height = 3000)
   # Increase margins of the plots to have enough space for annotation
-  par(mar = c(12.1, 12.1, 2.1, 2.1))
+  par(mar = c(25.1, 12.1, 2.1, 2.1))
   # Plot multiple plots in one figure
   layout(matrix(seq_len(nrows_in_plot * ncols_in_plot),
                 nrow = nrows_in_plot,
@@ -41,7 +45,7 @@ plot_aggregate <- function(flowset,
     colors <- "#00000055"
   } else {
     labels <- factor(labels)
-    color_palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Paired"))
+    color_palette <- colorRampPalette(RColorBrewer::brewer.pal(9, "Set1"))
     colors <- paste0(color_palette(length(levels(labels))), "55")
     colors <- colors[labels][file_values]
   }
