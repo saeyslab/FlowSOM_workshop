@@ -113,8 +113,13 @@ fsom_t_b <- FlowSOM(data$flowSet,
                     seed = 1)
 ```
 
-# Plotting the results
+# Plotting the clustering result
 
+The FlowSOM function returns a list with two element. The first element is 
+called FlowSOM and contains all data and information about the first clustering
+step. The second element contains the metaclustering result.
+
+We can plot the first clustering by calling the PlotStars function.
 ```{r fig.width = 10, asp.ratio = 1}
 PlotStars(fsom$FlowSOM)
 ```
@@ -122,17 +127,15 @@ PlotStars(fsom$FlowSOM)
 In the original FlowSOM object, the size of the node depends on the number of
 cells assigned to it. We make an adapted version in which the node size is reset
 to a value of 12 everywhere, for an easier view of the data.
-```{r}
-fsom_equal_sizes <- UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 12)
-```
-
 ```{r fig.width = 10, asp.ratio = 1}
+fsom_equal_sizes <- UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 12)
 PlotStars(fsom_equal_sizes)
 ```
 
 Exercises:
 
 3) Also plot the trees for your fsom49 object
+
 ```{r fig.width = 10, asp.ratio = 1}
 PlotStars(fsom49$FlowSOM)
 ```
@@ -168,6 +171,8 @@ PlotStars(fsom_t_b$FlowSOM,
           view = "grid")
 ```
 
+# Plotting the metaclustering result
+
 The metaclustering level often corresponds closer to the population level you
 would expect in manual gating. We visualize them using the backgroundvalues
 argument, which takes one value for every FlowSOM cluster as input and color 
@@ -186,6 +191,19 @@ into a specific gate.
 PlotPies(fsom$FlowSOM, 
          manual_labels, 
          backgroundValues = fsom$metaclustering)
+```
+
+We can also summarise this in numbers ...
+```{r}
+table(GetMetaclusters(fsom),
+      manual_labels)
+```
+
+and use this information to label the metaclusters.
+```{r}
+metacluster_names <- label_metaclusters(fsom, manual_labels)
+
+metacluster_names
 ```
 
 Exercises:
@@ -208,7 +226,9 @@ PlotPies(fsom49$FlowSOM,
          cellTypes = manual_labels)
 ```
 
-To refer to the clusters, it is easier to assign each of them a number
+# Inspecting the clusters in more detail
+
+To refer to the clusters, it is easier to assign each of them a number.
 
 ```{r  fig.width = 10, fig.height = 10}
 PlotNumbers(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0))
@@ -219,6 +239,23 @@ Show the metacluster numbers on a plot.
 ```{r  fig.width = 15}
 PlotLabels(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0),
            labels = fsom$metaclustering)
+```
+
+Show the metacluster names on a plot.
+
+```{r  fig.width = 15}
+PlotLabels(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0),
+           labels = metacluster_names[fsom$metaclustering])
+```
+
+We can then plot a heatmap of the MFIs to have an overview in table format
+
+```{r fig.width = 15}
+plot_cluster_MFIs(fsom)
+```
+
+```{r fig.width = 15}
+plot_metacluster_MFIs(fsom, metacluster_names)
 ```
 
 It might be interesting to check the backgating of a cluster to the 
@@ -244,65 +281,75 @@ PlotClusters2D(fsom$FlowSOM,
 
 Exercises:
 
-7) Plot the cluster which contains the NKT cells on CD3 vs CD161
+7) Plot the metacluster MFIs from the fsom49 object
+```{r}
+plot_metacluster_MFIs(fsom_t_b)
+```
+
+8) Plot the CD3+ CD19- cells from the fsom_t_b clustering (identified in 
+the heatmap from the previous exercise) on CD3 vs CD19
+```{r}
+PlotClusters2D(fsom_t_b$FlowSOM,
+               marker1 = get_channels(ff, "CD3"),
+               marker2 = get_channels(ff, "CD19"),
+               which(fsom_t_b$metaclustering == 3))
+```
+
+9) From the original FlowSOM, plot the cluster which contains the NKT cells on 
+   CD3 vs CD161
 ```{r fig.width = 10, asp.ratio = 1}
-
+PlotClusters2D(fsom$FlowSOM,
+               get_channels(ff, "CD3"),
+               get_channels(ff, "CD161"),
+               37)
 ```
-
-
-heatmap metacluster mfis
-
-```{r fig.width = 15}
-MFIs <- GetMFIs(fsom)[, channels_of_interest]
-colnames(MFIs) <- get_markers(data$flowSet[[1]], colnames(MFIs))
-pheatmap::pheatmap(MFIs)
-```
-
-```{r fig.width = 15}
-meta_MFIs <- MetaclusterMFIs(fsom)[, channels_of_interest]
-colnames(meta_MFIs) <- get_markers(data$flowSet[[1]], colnames(meta_MFIs))
-pheatmap::pheatmap(meta_MFIs)
-```
-
-
 
 # Comparing samples
 
-The table function gives an overview of the amount of times every value appears.
-If you pass it two vectors, it will count the pairs that appear.
+
 ```{r}
-table(c("a", "b", "b", "c", "b", "a"))
-table(c("a", "b", "b", "c", "b", "a"),
-      c("A", "B", "B", "A", "B", "B"))
+file <- "../inst/extdata/21-10-15_Tube_011.fcs"
+fsom_tube11 <- FlowSOMSubset(fsom$FlowSOM,
+                             fsom$FlowSOM$metaData[[file]][1]:fsom$FlowSOM$metaData[[file]][2])
+PlotStars(fsom_tube11)
 ```
 
-We can use this to get an overview of the number of cells assigned to each of the clusters.
+Exercises:
+
+10) Plot this figure for Tube 28
 ```{r}
-table(GetClusters(fsom$FlowSOM))
+file <- "../inst/extdata/21-10-15_Tube_028.fcs"
+fsom_tube28 <- FlowSOMSubset(fsom$FlowSOM,
+                            fsom$FlowSOM$metaData[[file]][1]:fsom$FlowSOM$metaData[[file]][2])
+PlotStars(fsom_tube28)
 ```
 
+This visually already gives some first idea of the variation, but of course it
+is better to actually compute this in numbers. 
+
 ```{r}
-table(GetMetaclusters(fsom),
-      manual_labels)
+pctgs <- get_pctgs(fsom, metacluster_names)
+
+pctgs$pctgs[, c(1:3, 98:100)]
+
+pctgs$pctgs_meta
 ```
 
-```{r}
-counts <- get_counts(fsom)
-
-counts$counts
-
-counts$meta_counts
+```{r fig.width = 8, fig.height = 10}
+plot_pctgs(pctgs$pctgs_meta)
 ```
 
-We can use these numbers to plot:
-```{r}
+We can also use these numbers to apply statistical tests:
 
+```{r}
+statistics_res <- compute_wilcox(pctgs$pctgs_meta,
+                                 group1 = c("21-10-15_Tube_011.fcs",
+                                            "21-10-15_Tube_012.fcs",
+                                            "21-10-15_Tube_013.fcs"),
+                                 group2 = c("21-10-15_Tube_028.fcs",
+                                            "21-10-15_Tube_030.fcs",
+                                            "21-10-15_Tube_031.fcs"))
+
+statistics_res
 ```
-
-```{r}
-FlowSOMSubset()
-``` 
-
- boxplots?
- 
  
