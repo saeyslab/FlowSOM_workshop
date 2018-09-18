@@ -1,8 +1,102 @@
 ---
-title: "R Notebook"
+title: "R tSNE"
 output: html_notebook
 ---
 
+In this script, we show how tSNE can be applied to an FCS files, to visualize
+the cells in 2 dimensions.
+
+# Setup
+
+We load some previously installed libraries, which offer specific
+functionalities for flow cytometry data analysis. You can have a look at
+http://bioconductor.org/packages/release/BiocViews.html#___FlowCytometry
+to see more packages which might be of interest.
+
 ```{r}
-plot(cars)
+library(flowCore)
+library(Rtsne)
+library(FlowSOMworkshop)
 ```
+We point to where the FlowJo workspace and the fcs file are saved on our 
+computer, and we parse the fcs file:
+
+```{r}
+wsp_file <- "../inst/extdata/manualGating.wsp"
+fcs_file <- "../inst/extdata/21-10-15_Tube_013.fcs"
+tube_13 <- parse_flowjo(fcs_file, wsp_file)
+```
+
+We will then select only the live cells to run tSNE on:
+```{r}
+live <- gating_subset(tube_13, "Live")
+live_ff <- live$flowFrame
+```
+
+While we read information of all gates in the gating hierarchy, some of them
+are only used as intermediate steps to finally recover the correct subsets of
+cells. We identify all gates which are really of interest to label the cells,
+and can then use this information to assign 1 final label to each cell.
+
+```{r}
+cell_types <- c("Macrophages", "B cells", "NK cells", "NK T cells",
+                "DCs", "Neutrophils", "Basophils", "T cells")
+
+manual_labels <- manual_vector(live$gates,
+                               cell_types)
+```
+
+# tSNE
+
+As tSNE can take a long time to run on large amounts of cells, we will work
+only on the 1000 first cells from the flowframe:
+
+```{r}
+subsample <- live_ff[1:1000,]
+```
+
+We will also select the markser in which we are interested in to perform the 
+tSNE analysis:
+
+```{r}
+channels_of_interest <-  colnames(live_ff)[c(8:15, 17:19)]
+print(get_markers(live_ff, channels_of_interest))
+```
+
+We can then apply tSNE to the matrix "subsample@exprs" that contains the 
+expression values of 1000 live cells:
+
+```{r}
+tsne <- Rtsne(subsample@exprs[,channels_of_interest])
+```
+
+And plot the result of the tSNE:
+
+```{r}
+plot(tsne$Y)
+```
+
+We can also color this plot according to the expression value 
+of a certain marker of interest:
+
+```{r}
+plot_marker <- plotSNE_marker(flowframe = subsample,
+                              tsne_result = tsne,
+                              marker = "CD19")
+plot_marker
+```
+
+Or we can color this plot according to the results of the manual gating. 
+To do so, we will first save the identities of our 1000 cells in an object:
+
+```{r}
+cell_ids <- manual_labels[1:1000]
+```
+
+We can then plot the tSNE result, colored according to the manual gating:
+
+```{r}
+plotSNE_manual_gating(tsne_result = tsne, cell_ids = cell_ids)
+```
+
+
