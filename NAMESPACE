@@ -3,4 +3,6 @@
 export(gating_subset)
 export(manual_vector)
 export(parse_flowjo)
+export(plotSNE_manual_gating)
+export(plotSNE_marker)
 export(plot_aggregate)
