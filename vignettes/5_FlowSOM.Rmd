@@ -154,11 +154,12 @@ PlotStars(fsom_equal_sizes,
           markers = get_channels(ff, c("CD3", "CD19", "MHCII", "CD161")))
 ```
 
-3) You can choose the colors of the markers by specifying the colorPalette argument.
+5) You can choose the colors of the markers by specifying the colorPalette argument.
 This needs a colorPalette as input, which you can generate by using something like
 grDevices::colorRampPalette(c("color1", "color2", "color3", "color4"))  
 Regenerate your previous plot with some colors of your choice.  
 You might want to have a look at colorbrewer2.org to pick nice colors.
+
 ```{r fig.width = 10, asp.ratio = 1}
 PlotStars(fsom_equal_sizes,
           markers = get_channels(ff, c("CD3", "CD19", "MHCII", "CD161")),
@@ -168,7 +169,7 @@ PlotStars(fsom_equal_sizes,
                                                        "#df65b0")))
 ```
 
-4) By specifying view = "grid", you can show the original grid instead. Try
+6) By specifying view = "grid", you can show the original grid instead. Try
 this out for your fsom_t_b object.
 
 ```{r fig.width = 15}
@@ -198,13 +199,15 @@ PlotPies(fsom$FlowSOM,
          backgroundValues = fsom$metaclustering)
 ```
 
-We can also summarise this in numbers ...
+We can also summarise this in numbers:
+
 ```{r}
 table(GetMetaclusters(fsom),
       manual_labels)
 ```
 
 and use this information to label the metaclusters.
+
 ```{r}
 metacluster_names <- label_metaclusters(fsom, manual_labels)
 
@@ -213,15 +216,17 @@ metacluster_names
 
 Exercises:
 
-5) Show the metaclustering on the grid
+7) Show the metaclustering on the grid
+
 ```{r fig.width = 15}
 PlotStars(fsom$FlowSOM,
           backgroundValues = fsom$metaclustering,
           view = "grid")
 ```
 
-6) Show the manual gating result on the fsom49 tree, 
-with and without the metaclustering coloring
+8) Show the manual gating result on the fsom49 tree, with and without the
+metaclustering coloring
+
 ```{r  fig.width = 15}
 PlotPies(fsom49$FlowSOM,
          cellTypes = manual_labels,
@@ -269,6 +274,7 @@ You can use the PlotClusters2D function for this, which takes a FlowSOM object,
 two channel names and a vector of cluster numbers as input.
 
 Example with one cluster:
+
 ```{r fig.width = 15}
 PlotClusters2D(fsom$FlowSOM,
                get_channels(ff, "CD3"),
@@ -286,13 +292,15 @@ PlotClusters2D(fsom$FlowSOM,
 
 Exercises:
 
-7) Plot the metacluster MFIs from the fsom49 object
+9) Plot the metacluster MFIs from the fsom_t_b object
+
 ```{r}
 plot_metacluster_MFIs(fsom_t_b)
 ```
 
-8) Plot the CD3+ CD19- cells from the fsom_t_b clustering (identified in 
-the heatmap from the previous exercise) on CD3 vs CD19
+10) Plot the metacluster corresponding to the CD3+ CD19- cells from the fsom_t_b
+clustering (identified in the heatmap from the previous exercise) on CD3 vs CD19
+
 ```{r}
 PlotClusters2D(fsom_t_b$FlowSOM,
                marker1 = get_channels(ff, "CD3"),
@@ -300,8 +308,9 @@ PlotClusters2D(fsom_t_b$FlowSOM,
                which(fsom_t_b$metaclustering == 3))
 ```
 
-9) From the original FlowSOM, plot the cluster which contains the NKT cells on 
-   CD3 vs CD161
+11) From the original FlowSOM, plot the cluster which contains the NKT cells on 
+CD3 vs CD161
+   
 ```{r fig.width = 10, asp.ratio = 1}
 PlotClusters2D(fsom$FlowSOM,
                get_channels(ff, "CD3"),
@@ -311,6 +320,7 @@ PlotClusters2D(fsom$FlowSOM,
 
 # Comparing samples
 
+We can take a subset of 1 file at the time.
 
 ```{r}
 file <- "../inst/extdata/21-10-15_Tube_011.fcs"
