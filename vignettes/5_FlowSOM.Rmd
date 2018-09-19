@@ -9,6 +9,8 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+In this script, we showcase how to use the FlowSOM algorithm.
+
 # Setup
 
 Load some previously installed libraries
@@ -42,11 +44,13 @@ data <- parse_flowjo(files,
 ```
 
 We only want to work on the live single cells.
+
 ```{r}
 data <- gating_subset(data, "Live")
 ```
 
 We store the first flowframe in a separate variable, for easy access later on
+
 ```{r}
 ff <- data$flowSet[[1]]
 ```
@@ -66,7 +70,7 @@ manual_labels <- manual_vector(data$gates,
 
 # FlowSOM
 
-Now we can run the FlowSOM algorithm. 
+Now we can run the FlowSOM algorithm.  
 We need to pass the data, which channels we want to use, whether we want to 
 scale the data (if TRUE, each column is tranformed to a mean of 0 and a sd of 
 1), the x- and y-dimensions of our grid (resulting in x * y clusters), the
@@ -88,7 +92,6 @@ fsom <- FlowSOM(data$flowSet,
                 seed = 1)
 fsom$FlowSOM$prettyColnames <- gsub(" <.*", "", fsom$FlowSOM$prettyColnames)
 ```
-
 
 Exercises:
 
@@ -120,6 +123,7 @@ called FlowSOM and contains all data and information about the first clustering
 step. The second element contains the metaclustering result.
 
 We can plot the first clustering by calling the PlotStars function.
+
 ```{r fig.width = 10, asp.ratio = 1}
 PlotStars(fsom$FlowSOM)
 ```
@@ -127,6 +131,7 @@ PlotStars(fsom$FlowSOM)
 In the original FlowSOM object, the size of the node depends on the number of
 cells assigned to it. We make an adapted version in which the node size is reset
 to a value of 12 everywhere, for an easier view of the data.
+
 ```{r fig.width = 10, asp.ratio = 1}
 fsom_equal_sizes <- UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 12)
 PlotStars(fsom_equal_sizes)
@@ -134,7 +139,7 @@ PlotStars(fsom_equal_sizes)
 
 Exercises:
 
-3) Also plot the trees for your fsom49 object
+3) Plot the trees for your fsom49 object
 
 ```{r fig.width = 10, asp.ratio = 1}
 PlotStars(fsom49$FlowSOM)
