@@ -4,7 +4,8 @@
 \alias{plot_aggregate}
 \title{Plot Aggregate}
 \usage{
-plot_aggregate(flowset, labels = NULL, output_image = "aggregate.png")
+plot_aggregate(flowset, labels = NULL, output_image = "aggregate.png",
+  max_nm = 6 * 25000)
 }
 \arguments{
 \item{flowset}{FlowSet to plot}
