@@ -1,6 +1,12 @@
 ---
-title: "Quality control of cytometry data"
-output: html_notebook
+title: "Part 3 - Quality Control"
+author: "Helena Todorov and Sofie Van Gassen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Part 3 - Quality Control}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 In this script, we will go through the necessary steps to apply, in order to 
@@ -15,10 +21,12 @@ http://bioconductor.org/packages/release/BiocViews.html#___FlowCytometry
 to see more packages which might be of interest.
 
 ```{r}
-library(flowCore)
-library(flowDensity)
-library(flowAI)
-library(FlowSOMworkshop)
+library(flowCore) # For general fcs file handling
+library(flowDensity) # For flow data plotting
+library(flowWorkspace) # For loading a flowjo workspace
+library(flowAI) # For quality control of fcs files
+library(FlowSOM) # For the FlowSOM algorithm
+library(FlowSOMworkshop) # Additional functions for this workshop
 ```
 
 We point to where the FlowJo workspace and the fcs file are saved on our 
@@ -38,20 +46,19 @@ ff_13 <- tube_13$flowFrame
 ```
 
 Exercises:
-1) Generate a "tube_11" object, containing the flowFrame that corresponds
+
+1) Generate a "tube_11" object, containing the flowjo result that corresponds
 to the cells of the tube 11:
 ```{r}
 fcs_file_11 <- "../inst/extdata/21-10-15_Tube_011.fcs"
 tube_11 <- parse_flowjo(fcs_file_11, wsp_file)
 ```
 
-2) Generate a "ff_28" object, containing the flowFrame that corresponds
-to the cells of the tube 28:
+2) Generate a "ff_11" object, containing the flowFrame that corresponds
+to the cells of the tube 11:
 ```{r}
-fcs_file_28 <- "../inst/extdata/21-10-15_Tube_028.fcs"
-tube_28 <- parse_flowjo(fcs_file_28, wsp_file)
-ff_28 <- tube_28$flowFrame
-ff_28
+ff_11 <- tube_11$flowFrame
+ff_11
 ```
 
 
@@ -64,8 +71,11 @@ folder in which we want the results to be plotted.
 resQC <- flow_auto_qc(ff_13, folder_results = "../QC/")
 ```
 
-Now, we will assess the quality of all 6 fcs files that we have available.
-We begin by listing all these fcs files:
+Now, we will assess the quality of all 6 fcs files that we have available.  
+We begin by listing all these fcs files using the list.files function.  
+This function lists all files in a given directory. A pattern can be specified 
+so only the files containing this pattern are selected. If you are interested 
+in defining very detailed patterns, google "R regular expressions".
 
 ```{r}
 fcs_files <- list.files("../inst/extdata/", pattern = ".fcs")
@@ -114,12 +124,17 @@ nrow(flowset[[2]])
 get_channels(flowset[[1]], c("CD3", "CD19"))
 ```
 
-To use flowAI, the "flow_auto_qc" accepts  flowsets as well as flowframes 
+To use flowAI, the "flow_auto_qc" accepts flowsets as well as flowframes 
 as input, so we can use it directly on the flowset that we generated:
 
 ```{r}
 resQC <- flow_auto_qc(flowset, folder_results = "../QC/")
 ```
+
+A QC report is generated for each file in the specified folder. 
+Have a look at these to see if the measurements were consistent over time. If not,
+you could add a manual time-gate in flowjo or you could use some additional
+functionality of the FlowAI package to generate cleaned up fcs files.
 
 # Control of differences between files:
 
@@ -137,10 +152,13 @@ We first select the live cells only:
 data_live <- gating_subset(tubes, "Live")
 ```
 
-And then plot these live cells, for each of the files we have:
+And then plot these live cells, for each of the files we have.
+We can also add a labels argument, which contains one value for every flowframe,
+indicating to which group it belongs. This value will be used for coloring.
 
 ```{r}
 plot_aggregate(flowset = data_live$flowSet, 
-               labels = c("1","1","1","2","2","2"))
+               labels = c("1","1","1","2","2","2"),
+               output_image = "aggregate.png")
 ```
 

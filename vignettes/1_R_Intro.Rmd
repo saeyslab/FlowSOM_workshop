@@ -1,9 +1,21 @@
 ---
-title: "An introduction to R"
-output: html_notebook
+title: "Part 1 - R introduction"
+author: "Helena Todorov and Sofie Van Gassen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Part 1 - R introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
-In this introduction to R, we will present the main R concepts, by introducing R variables, vectors, matrices, lists, functions and packages.
+In this introduction to R, we will present the main R concepts, by introducing 
+R variables, vectors, matrices, lists, functions and packages.  
+You could also have a look at the following online resources:  
+https://www.youtube.com/watch?v=o0Y478jOjGk  
+https://www.youtube.com/watch?v=u1r5XTqrCTQ  
+https://campus.datacamp.com/  
+http://tryr.codeschool.com/  
 
 # Variables
 
@@ -26,6 +38,7 @@ a + a
 
 
 Exercises:
+
 1) Assign a number of your choice to "b"
 ```{r}
 b <- 7
@@ -60,19 +73,19 @@ b <- 1:10
 
 You can concatenate these values with the "c" function:
 ```{r}
-c( b, b)
+c(b, b)
 ```
 
 You can also apply mathematical formulas to them:
-
 ```{r}
 b + b
 ```
 
-Exercices on vectors:
+Exercises on vectors:  
+
 6) Concatenate a and b
 ```{r}
-c(a,b)
+c(a, b)
 ```
 
 7) Concatenate your name and a
@@ -89,14 +102,13 @@ a + b
 
 Many functions exist in R, and greatly simplify your life:
 ```{r}
-(1+2+3+4+5+6+7+8+9+10)/10
+(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10)/10
 mean(b)
 ```
 
-The head function shows the 6 first elements of any object.
-The mean function computes the mean of an object.
-The length function returns the length of an object.
-
+The head function shows the 6 first elements of any object.  
+The median function computes the median of a vector.  
+The length function returns the length of a vector.
 ```{r}
 head(b)
 head(b, n=3)
@@ -106,7 +118,8 @@ length(b)
 
 # Matrices
 
-Matrices can be compared to tables: they are two dimensional and can contain numbers, characters...
+Matrices can be compared to tables: they are two dimensional and can contain 
+numbers, characters...
 ```{r}
 load("../inst/extdata/cyto.RData")
 cyto
@@ -122,45 +135,45 @@ ncol(cyto)
 
 A specific column of a matrix can be selected by its number:
 ```{r}
-fcs_a <- cyto[,1]
+fcs_a <- cyto[, 1]
 fcs_a
 ```
 
 Or the column can also be selected by typing its column name directly:
 ```{r}
-cd45 <- cyto[,"CD45"]
+cd45 <- cyto[, "CD45"]
 cd45
 ```
 
 Or we can select a specific row:
 ```{r}
-cell2 <- cyto[2,]
+cell2 <- cyto[2, ]
 cell2
 ```
 
 We can also select several columns of a matrix, with the "c" function:
 ```{r}
-cyto[,c(1,2)]
+cyto[, c(1, 2)]
 ```
 
 Exercises on matrices:
 
 9) Show the 2 first rows of the cyto matrix
 ```{r}
-cyto[c(1,2),]
+cyto[c(1, 2), ]
 ```
 
 10) Show the FSC-A value of the first cell
 ```{r}
-cyto[1,1]
+cyto[1, "FSC-A"]
 ```
 
 # Lists
 
 Lists in R can be compared to vectors, which can contain various objects:
 ```{r}
-random_numbers <- c(1,2,3,7)
-random_letters <- c("A","B","C","Z")
+random_numbers <- c(1, 2, 3, 7)
+random_letters <- c("A", "B", "C", "Z")
 ```
 
 ```{r}
@@ -169,12 +182,14 @@ my_list <- list(my_numbers = random_numbers,
 my_list
 ```
 
-The different members of a list can then be accessed by using the "$" and typing their name directly:
+The different items of a list can then be accessed by using the "$" and 
+typing their name directly:
 ```{r}
 my_list$my_numbers
 ```
 
 Exercises on lists:
+
 11) Create a list containing your name, and job:
 ```{r}
 my_list <- list(name = name, job = "bioinformatician")
@@ -184,9 +199,8 @@ my_list
 
 # Packages
 
-Packages contain sets of useful functions, which can be installed, loaded, and then used in R.
-A package needs to be installed only once on your computer:
-
+Packages contain sets of useful functions, which can be installed, loaded, and 
+then used in R. A package needs to be installed only once on your computer:
 ```{r}
 install.packages(Rtsne)
 ```
@@ -197,7 +211,6 @@ library(Rtsne)
 ```
 
 The functions of an installed package can then be used. They often need the user to set parameters:
-
 ```{r}
 tsne <- Rtsne(cyto)
 ```

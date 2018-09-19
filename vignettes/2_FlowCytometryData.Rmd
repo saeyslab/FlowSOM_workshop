@@ -9,6 +9,9 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+In this introduction to flow cytometry data in R, we will showcase how to parse
+a flowjo workspace and inspect and plot the data which is loaded.
+
 # Setup
 
 We load some previously installed libraries, which offer specific
@@ -17,11 +20,11 @@ http://bioconductor.org/packages/release/BiocViews.html#___FlowCytometry
 to see more packages which might be of interest.
 
 ```{r}
-library(flowCore)
-library(flowDensity)
-library(flowWorkspace)
-library(FlowSOM)
-library(FlowSOMworkshop)
+library(flowCore) # For general fcs file handling
+library(flowDensity) # For flow data plotting
+library(flowWorkspace) # For loading a flowjo workspace
+library(FlowSOM) # For the FlowSOM algorithm
+library(FlowSOMworkshop) # Additional functions for this workshop
 ```
 
 We point to where the FlowJo workspace and the fcs file are saved on our 
@@ -60,34 +63,41 @@ gates <- flowjo_res$gates
 
 # Inspect the flowFrame
 
-The measurements are saved in a matrix, in which each row represents a cell
-and every column represents a marker. 
+The measurements are saved in a flowFrame object, which internally contains a
+matrix. In this matrix, each row represents a cell and every column represents
+a marker. 
 
 ```{r}
 nrow(ff)
 ```
 
-Notice that these column names correspond to the detector names in your
-machine.
+Notice that the column names correspond to the detector names in your machine.
 
 ```{r}
 colnames(ff)
 ```
 
 We can make use of some functions from the FlowSOM package to easily access the
-marker names
+actual marker names.
+
+```{r}
+get_markers(ff, "Comp-PE-A")
+```
+
+This also works on a vector instead of a single value:
 
 ```{r}
 get_markers(ff, colnames(ff))
 ```
 
-This also works in reverse
+We also have a function available to do the reverse:
+
 ```{r}
 get_channels(ff, "CD3")
 ```
 
-To access the specific measurements, we look at the exprs element of the 
-flowframe object. Note that these values have been compensated and transformed!
+To access the actual matrix, we need to look at the exprs element of the flowframe 
+object. Note that these values have been compensated and transformed!
 
 ```{r}
 head(ff@exprs)
@@ -165,6 +175,7 @@ data_live <- gating_subset(flowjo_res, "Live")
 ```
 
 Exercise:
+
 8) Show how many cells are selected in selection_live
 ```{r}
 nrow(data_live$flowFrame)
