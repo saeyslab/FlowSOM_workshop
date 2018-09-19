@@ -318,26 +318,27 @@ PlotClusters2D(fsom$FlowSOM,
                37)
 ```
 
-# Comparing samples
+# Showing individual samples
 
 We can take a subset of 1 file at the time.
 
 ```{r}
 file <- "../inst/extdata/21-10-15_Tube_011.fcs"
-fsom_tube11 <- FlowSOMSubset(fsom$FlowSOM,
-                             fsom$FlowSOM$metaData[[file]][1]:fsom$FlowSOM$metaData[[file]][2])
-PlotStars(fsom_tube11)
+fsom_tube11 <- FlowSOM_subset(fsom, file)
+PlotStars(fsom_tube11$FlowSOM)
 ```
 
 Exercises:
 
-10) Plot this figure for Tube 28
+12) Plot this figure for Tube 28
+
 ```{r}
 file <- "../inst/extdata/21-10-15_Tube_028.fcs"
-fsom_tube28 <- FlowSOMSubset(fsom$FlowSOM,
-                            fsom$FlowSOM$metaData[[file]][1]:fsom$FlowSOM$metaData[[file]][2])
+fsom_tube28 <- FlowSOM_subset(fsom$FlowSOM, file)
 PlotStars(fsom_tube28)
 ```
+
+# Comparing samples
 
 This visually already gives some first idea of the variation, but of course it
 is better to actually compute this in numbers. 

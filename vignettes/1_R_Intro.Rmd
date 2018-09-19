@@ -202,7 +202,7 @@ my_list
 Packages contain sets of useful functions, which can be installed, loaded, and 
 then used in R. A package needs to be installed only once on your computer:
 ```{r}
-install.packages(Rtsne)
+#install.packages("Rtsne")
 ```
 
 But needs to be loaded every time you wish to use it:
