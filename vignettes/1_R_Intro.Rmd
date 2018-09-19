@@ -212,8 +212,11 @@ library(Rtsne)
 
 The functions of an installed package can then be used. They often need the user to set parameters:
 ```{r}
-tsne <- Rtsne(cyto)
+#tsne <- Rtsne(cyto)
 ```
+
+This line would generate an error, we need to lower the perplexity as we only 
+have 10 cells.
 
 ```{r}
 tsne <- Rtsne(cyto, perplexity = 2)
