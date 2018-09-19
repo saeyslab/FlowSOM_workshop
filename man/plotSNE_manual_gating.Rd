@@ -4,12 +4,12 @@
 \alias{plotSNE_manual_gating}
 \title{plotSNE_manual_gating}
 \usage{
-plotSNE_manual_gating(tsne_result, cell_ids)
+plotSNE_manual_gating(tsne_result, cell_labels)
 }
 \arguments{
 \item{tsne_result}{The resulting object of the Rtsne::Rtsne function}
 
-\item{cell_ids}{The labels of the cells, as assigned by manual gating}
+\item{cell_labels}{The labels of the cells, as assigned by manual gating}
 }
 \value{
 ggplot of the tSNE result colored according to the manual gating.
