@@ -23,6 +23,7 @@ to see more packages which might be of interest.
 library(flowCore)
 library(Rtsne)
 library(FlowSOMworkshop)
+library(FlowSOM)
 ```
 
 We point to where the FlowJo workspace and the fcs file are saved on our 
