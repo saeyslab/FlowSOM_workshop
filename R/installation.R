@@ -2,6 +2,7 @@ installation_flowSOMworkshop <- function(){
   install.packages("devtools")
   install.packages("Rtsne")
   install.packages("tidyverse")
+  install.packages("reshape2")
 
   # Bioconductor packages , to be installed through biocLite:
 
@@ -17,3 +18,5 @@ installation_flowSOMworkshop <- function(){
   devtools::install_github("saeyslab/FlowSOM")
   devtools::install_github("saeyslab/FlowSOM_workshop", build_vignettes = TRUE)
 }
+
+

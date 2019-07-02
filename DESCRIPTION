@@ -1,7 +1,7 @@
 Package: FlowSOMworkshop
 Type: Package
 Title: How to get started with FlowSOM
-Version: 0.1.0
+Version: 0.1.1
 Author: Helena Todorov and Sofie Van Gassen
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: Vignettes to explain how to get started with FlowSOM and some 
@@ -9,6 +9,6 @@ Description: Vignettes to explain how to get started with FlowSOM and some
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr 
 Suggests: knitr 

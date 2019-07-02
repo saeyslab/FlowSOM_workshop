@@ -124,7 +124,7 @@ step. The second element contains the metaclustering result.
 
 We can plot the first clustering by calling the PlotStars function.
 
-```{r fig.width = 10, asp.ratio = 1}
+```{r fig.width = 7, fig.height = 7}
 PlotStars(fsom$FlowSOM)
 ```
 
@@ -132,7 +132,7 @@ In the original FlowSOM object, the size of the node depends on the number of
 cells assigned to it. We make an adapted version in which the node size is reset
 to a value of 12 everywhere, for an easier view of the data.
 
-```{r fig.width = 10, asp.ratio = 1}
+```{r fig.width = 7, fig.height = 7}
 fsom_equal_sizes <- UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 12)
 PlotStars(fsom_equal_sizes)
 ```
@@ -141,7 +141,7 @@ Exercises:
 
 3) Plot the trees for your fsom49 object
 
-```{r fig.width = 10, asp.ratio = 1}
+```{r fig.width = 7, fig.height = 7}
 PlotStars(fsom49$FlowSOM)
 ```
 
@@ -149,7 +149,7 @@ PlotStars(fsom49$FlowSOM)
 Plot the tree for the original fsom object showing only four markers of your 
 choice.
 
-```{r  fig.width = 10, asp.ratio = 1}
+```{r fig.width = 7, fig.height = 7}
 PlotStars(fsom_equal_sizes,
           markers = get_channels(ff, c("CD3", "CD19", "MHCII", "CD161")))
 ```
@@ -160,7 +160,7 @@ grDevices::colorRampPalette(c("color1", "color2", "color3", "color4"))
 Regenerate your previous plot with some colors of your choice.  
 You might want to have a look at colorbrewer2.org to pick nice colors.
 
-```{r fig.width = 10, asp.ratio = 1}
+```{r fig.width = 7, fig.height = 7}
 PlotStars(fsom_equal_sizes,
           markers = get_channels(ff, c("CD3", "CD19", "MHCII", "CD161")),
           colorPalette = grDevices::colorRampPalette(c("#bd0026", 
@@ -172,7 +172,7 @@ PlotStars(fsom_equal_sizes,
 6) By specifying view = "grid", you can show the original grid instead. Try
 this out for your fsom_t_b object.
 
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotStars(fsom_t_b$FlowSOM,
           view = "grid")
 ```
@@ -184,7 +184,7 @@ would expect in manual gating. We visualize them using the backgroundvalues
 argument, which takes one value for every FlowSOM cluster as input and color 
 codes them.
 
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotStars(fsom_equal_sizes,
           backgroundValues = fsom$metaclustering)
 ```
@@ -193,7 +193,7 @@ We can also compare this structure with the manual gating results.
 We plot pie charts indicating the percentage of cells in each cluster falling
 into a specific gate.
 
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotPies(fsom$FlowSOM, 
          manual_labels, 
          backgroundValues = fsom$metaclustering)
@@ -218,7 +218,7 @@ Exercises:
 
 7) Show the metaclustering on the grid
 
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotStars(fsom$FlowSOM,
           backgroundValues = fsom$metaclustering,
           view = "grid")
@@ -227,7 +227,7 @@ PlotStars(fsom$FlowSOM,
 8) Show the manual gating result on the fsom49 tree, with and without the
 metaclustering coloring
 
-```{r  fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotPies(fsom49$FlowSOM,
          cellTypes = manual_labels,
          backgroundValues = fsom49$metaclustering)
@@ -240,31 +240,31 @@ PlotPies(fsom49$FlowSOM,
 
 To refer to the clusters, it is easier to assign each of them a number.
 
-```{r  fig.width = 10, fig.height = 10}
+```{r fig.width = 7, fig.height = 7}
 PlotNumbers(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0))
 ```
 
 Show the metacluster numbers on a plot.
 
-```{r  fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotLabels(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0),
            labels = fsom$metaclustering)
 ```
 
 Show the metacluster names on a plot.
 
-```{r  fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotLabels(UpdateNodeSize(fsom$FlowSOM, reset = TRUE, maxNodeSize = 0),
            labels = metacluster_names[fsom$metaclustering])
 ```
 
 We can then plot a heatmap of the MFIs to have an overview in table format
 
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 plot_cluster_MFIs(fsom)
 ```
 
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 plot_metacluster_MFIs(fsom, metacluster_names)
 ```
 
@@ -275,7 +275,7 @@ two channel names and a vector of cluster numbers as input.
 
 Example with one cluster:
 
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotClusters2D(fsom$FlowSOM,
                get_channels(ff, "CD3"),
                get_channels(ff, "CD19"),
@@ -283,7 +283,7 @@ PlotClusters2D(fsom$FlowSOM,
 ```
 
 Example with multiple clusters, which all belong to one metacluster:
-```{r fig.width = 15}
+```{r fig.width = 7, fig.height = 7}
 PlotClusters2D(fsom$FlowSOM,
                get_channels(data$flowSet[[1]], "CD3"),
                get_channels(data$flowSet[[1]], "CD19"),
@@ -294,14 +294,14 @@ Exercises:
 
 9) Plot the metacluster MFIs from the fsom_t_b object
 
-```{r}
+```{r fig.width = 7, fig.height = 7}
 plot_metacluster_MFIs(fsom_t_b)
 ```
 
 10) Plot the metacluster corresponding to the CD3+ CD19- cells from the fsom_t_b
 clustering (identified in the heatmap from the previous exercise) on CD3 vs CD19
 
-```{r}
+```{r fig.width = 7, fig.height = 7}
 PlotClusters2D(fsom_t_b$FlowSOM,
                marker1 = get_channels(ff, "CD3"),
                marker2 = get_channels(ff, "CD19"),
@@ -311,7 +311,7 @@ PlotClusters2D(fsom_t_b$FlowSOM,
 11) From the original FlowSOM, plot the cluster which contains the NKT cells on 
 CD3 vs CD161
    
-```{r fig.width = 10, asp.ratio = 1}
+```{r fig.width = 7, fig.height = 7}
 PlotClusters2D(fsom$FlowSOM,
                get_channels(ff, "CD3"),
                get_channels(ff, "CD161"),
@@ -322,7 +322,7 @@ PlotClusters2D(fsom$FlowSOM,
 
 We can take a subset of 1 file at the time.
 
-```{r}
+```{r fig.width = 7, fig.height = 7}
 file <- "../inst/extdata/21-10-15_Tube_011.fcs"
 fsom_tube11 <- FlowSOM_subset(fsom, file)
 PlotStars(fsom_tube11$FlowSOM)
@@ -334,8 +334,8 @@ Exercises:
 
 ```{r}
 file <- "../inst/extdata/21-10-15_Tube_028.fcs"
-fsom_tube28 <- FlowSOM_subset(fsom$FlowSOM, file)
-PlotStars(fsom_tube28)
+fsom_tube28 <- FlowSOM_subset(fsom, file)
+PlotStars(fsom_tube28$FlowSOM)
 ```
 
 # Comparing samples
@@ -351,7 +351,7 @@ pctgs$pctgs[, c(1:3, 98:100)]
 pctgs$pctgs_meta
 ```
 
-```{r fig.width = 8, fig.height = 10}
+```{r fig.width = 7, fig.height = 10}
 plot_pctgs(pctgs$pctgs_meta)
 ```
 
