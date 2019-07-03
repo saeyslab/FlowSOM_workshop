@@ -1,12 +1,8 @@
 ---
 title: "Part 1 - R introduction"
-author: "Helena Todorov and Sofie Van Gassen"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Part 1 - R introduction}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+output:
+  html_document: default
+  html_notebook: default
 ---
 
 In this introduction to R, we will present the main R concepts, by introducing 
@@ -41,27 +37,27 @@ Exercises:
 
 1) Assign a number of your choice to "b"
 ```{r}
-b <- 7
+
 ```
 
 2) Show what's in b
 ```{r}
-b
+
 ```
 
 3) Multiply a by 2
 ```{r}
-a * 2
+
 ```
 
 4) Add 10 to a
 ```{r}
-a + 10
+
 ```
 
 5) Assign your name to an object called name
 ```{r}
-name <- "Helena"
+
 ```
 
 # Vectors
@@ -85,17 +81,17 @@ Exercises on vectors:
 
 6) Concatenate a and b
 ```{r}
-c(a, b)
+
 ```
 
 7) Concatenate your name and a
 ```{r}
-c(name, a)
+
 ```
 
 8) Add a to b
 ```{r}
-a + b
+
 ```
 
 # Functions
@@ -160,12 +156,12 @@ Exercises on matrices:
 
 9) Show the 2 first rows of the cyto matrix
 ```{r}
-cyto[c(1, 2), ]
+
 ```
 
 10) Show the FSC-A value of the first cell
 ```{r}
-cyto[1, "FSC-A"]
+
 ```
 
 # Lists
@@ -192,8 +188,7 @@ Exercises on lists:
 
 11) Create a list containing your name, and job:
 ```{r}
-my_list <- list(name = name, job = "bioinformatician")
-my_list
+
 ```
 
 
@@ -202,7 +197,7 @@ my_list
 Packages contain sets of useful functions, which can be installed, loaded, and 
 then used in R. A package needs to be installed only once on your computer:
 ```{r}
-#install.packages("Rtsne")
+# install.packages(Rtsne)
 ```
 
 But needs to be loaded every time you wish to use it:
@@ -212,7 +207,7 @@ library(Rtsne)
 
 The functions of an installed package can then be used. They often need the user to set parameters:
 ```{r}
-#tsne <- Rtsne(cyto)
+# tsne <- Rtsne(cyto)
 ```
 
 This line would generate an error, we need to lower the perplexity as we only 
@@ -227,3 +222,60 @@ You can always ask help to R, if you wish to know how a function works:
 ```{r}
 ?Rtsne
 ```
+
+Once we have the coordinates of the cells in the new tsne space,
+we can plot them with the plot function:
+```{r}
+plot(tsne$Y)
+```
+
+
+# Exports
+
+Objetcs that were created in R can be exported in many formats to be shared.
+
+We can for instance save our result of tsne in an excel file, 
+using the write.xlsx function from the openxlsx package:
+```{r}
+library(openxlsx)
+
+write.xlsx(tsne$Y, file = "tsne_result.xlsx")
+```
+
+We can also, on the other hand, import excel files into R:
+```{r}
+imported_tsne <- read.xlsx("tsne_result.xlsx")
+imported_tsne
+```
+
+Plots can be exported from R, by opening a pdf environement.
+The pdf function opens a new pdf file. All the following plotting commands will
+automatically be plotted in the pdf file.
+The dev.off() function closes the pdf.
+```{r}
+pdf("tsne_plot.pdf")
+plot(tsne$Y)
+dev.off()
+```
+
+Exercises on plots:
+
+12) The plot function has many useful arguments (xlab to change the xaxis' name,
+ylab to change the yaxis' name, main to change the title...)
+Play with these parameters until you generate a tsne plot you like
+```{r}
+
+```
+
+13) You can now save your plot in a pdf file
+```{r}
+
+```
+
+14) Plots that are too big can also be saved in a png format, they will however 
+result in plots of lower quality. Knowing that the png function works exactly 
+like the pdf function, export your figure in a png file:
+```{r}
+
+```
+
