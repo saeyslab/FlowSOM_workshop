@@ -32,7 +32,8 @@ query_multiple <- function(fsom,
 
   labels <- rep("Unknown", fsom$map$nNodes)
 
-  pdf(pdf_name)
+  pdf(pdf_name,
+      useDingbats = FALSE)
   for(cell_type in names(cell_types)){
     query <- cell_types[[cell_type]]
     names(query) <- get_channels(ff, names(query))

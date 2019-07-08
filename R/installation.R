@@ -2,21 +2,24 @@ installation_flowSOMworkshop <- function(){
   install.packages("devtools")
   install.packages("Rtsne")
   install.packages("tidyverse")
-  install.packages("reshape2")
+  install.packages("openxlsx")
+  install.packages("mvtnorm")
 
-  # Bioconductor packages , to be installed through biocLite:
+  # Bioconductor packages , to be installed through BiocManager:
 
-  source("https://bioconductor.org/biocLite.R")
-  biocLite("flowCore")
-  biocLite("flowWorkspace")
-  biocLite("flowAI")
-  biocLite("flowDensity")
+  install.packages("BiocManager")
+  BiocManager::install("flowCore")
+  BiocManager::install("flowWorkspace")
+  BiocManager::install("flowAI")
+  BiocManager::install("flowDensity")
+  BiocManager::install("CytoML")
+
 
   # FlowSOM and flowSOM_workshop packages, to be installed directly from the
   # github repository:
 
   devtools::install_github("saeyslab/FlowSOM")
-  devtools::install_github("saeyslab/FlowSOM_workshop", build_vignettes = TRUE)
+  devtools::install_github("saeyslab/FlowSOM_workshop")
 }
 
 
