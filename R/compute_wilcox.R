@@ -8,7 +8,7 @@ compute_wilcox <- function(values, group1, group2){
   }
   adj_p <- stats::p.adjust(p_values, "BH")
 
-  diff <- sign(apply(values[group1, ], 2, median) - apply(values[group2, ], 2, median))
+  diff <- sign(apply(values[group2, ], 2, median) - apply(values[group1, ], 2, median))
   res <- cbind("P value" = p_values,
                "Adjusted p value" = adj_p,
                "- Log10 p" = -log10(adj_p),
