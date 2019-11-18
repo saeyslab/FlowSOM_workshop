@@ -1,0 +1,44 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(flowCore)
+library(FlowSOM)
+library(FlowSOMworkshop)
+library(Rtsne)
+library(ggplot2)
+```
+
+```{r}
+files <- list.files("../inst/extdata", 
+                    pattern = "Live.fcs",
+                    full.names = TRUE)
+
+set.seed(1)
+ff <- AggregateFlowFrames(files,
+                          cTotal = 6*10000)
+ff <- compensate(ff, ff@description$`$SPILLOVER`)
+ff <- transform(ff, estimateLogicle(ff, colnames(ff)[7:19]))
+
+fsom <- FlowSOM(ff,
+                colsToUse = c(8:15, 17:19),
+                scale = FALSE,
+                nClus = 10,
+                seed = 1)
+
+PlotStars(fsom$FlowSOM)
+
+set.seed(1)
+subset <- sample(1:nrow(ff), 5000)
+
+tSNE <- Rtsne(ff@exprs[subset, c(8:15, 17:19)])
+
+to_plot <- data.frame(tsne_x = tSNE$Y[,1],
+                      tsne_y = tSNE$Y[,2],
+                      cluster = factor(GetClusters(fsom)[subset]),
+                      metacluster = factor(GetMetaclusters(fsom)[subset]))
+
+ggplot(to_plot) +
+  geom_point(aes(x = tsne_x, y = tsne_y, col = metacluster))
+```

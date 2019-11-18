@@ -157,7 +157,7 @@ We can also add a labels argument, which contains one value for every flowframe,
 indicating to which group it belongs. This value will be used for coloring.
 
 ```{r  plot_aggregate}
-plot_aggregate(flowset = data_live$flowSet, 
+plot_aggregate(input = data_live$flowSet, 
                labels = c("1","1","1","2","2","2"),
                output_image = "aggregate.png")
 ```
