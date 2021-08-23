@@ -37,12 +37,10 @@ query_multiple <- function(fsom,
   for(cell_type in names(cell_types)){
     query <- cell_types[[cell_type]]
     names(query) <- get_channels(ff, names(query))
-    query_res <- QueryStarPlot(UpdateNodeSize(fsom,
-                                              reset = TRUE,
-                                              maxNodeSize = 8),
+    query_res <- QueryStarPlot(fsom,
                                query = query,
                                main = cell_type,
-                               ...)
+                               equalNodeSize = TRUE)
     labels[query_res$selected] <- cell_type
   }
   dev.off()

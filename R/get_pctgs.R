@@ -10,14 +10,14 @@
 #'
 #' @export
 get_pctgs <- function(fsom, meta_names = NULL){
-  cell_ids <- fsom$FlowSOM$metaData
+  cell_ids <- fsom$metaData
   files <- sapply(seq_len(length(cell_ids)),
                   function(i){
                     rep(gsub(".*/", "", names(cell_ids)[i]),
                         cell_ids[[i]][2] - cell_ids[[i]][1] + 1)
                   }) %>%
     unlist()
-  pctgs <- table(files, GetClusters(fsom$FlowSOM)) %>%
+  pctgs <- table(files, GetClusters(fsom)) %>%
     as.matrix() %>%
     apply(1, function(x){x/sum(x)}) %>%
     t()
